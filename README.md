@@ -27,14 +27,14 @@ To run this project locally, follow these steps:
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/your-username/ai-research-assistant.git
+   git clone https://github.com/naman-kumar1212/ai-research-assistant.git
    cd ai-research-assistant
    ```
 
 2. **Set up a virtual environment** (optional but recommended):
    ```bash
    python -m venv venv
-   source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
+   venv\Scripts\activate  # On MacOs, use `source venv/bin/activate`
    ```
 
 3. **Install dependencies**:
@@ -49,12 +49,19 @@ To run this project locally, follow these steps:
      LANGCHAIN_API_KEY=your_langchain_api_key
      ```
 
-5. **Run the application**:
+5. **Install Ollama Models**:
+   - Run the following commands to download and set up the required Ollama models:
+     ```bash
+     ollama run llama3.2
+     ollama pull nomic-embed-text
+     ```
+
+6. **Run the application**:
    ```bash
    streamlit run app.py
    ```
 
-6. **Access the application**:
+7. **Access the application**:
    - Open your browser and navigate to `http://localhost:8501`.
 
 ## Usage
