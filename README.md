@@ -83,7 +83,3 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 - [Ollama](https://ollama.ai/) for local LLM inference.
 - [Streamlit](https://streamlit.io/) for the web interface.
 - [Wikipedia API](https://www.mediawiki.org/wiki/API:Main_page) and [arXiv API](https://arxiv.org/help/api) for data sources.
-
----
-
-This `README.md` provides a comprehensive overview of your project, including installation instructions, usage guidelines, and contribution details. You can customize it further based on your specific needs.
