@@ -1,10 +1,4 @@
-Here’s a `README.md` file for your GitHub repository, along with a suggested repository name:
-
----
-
 # AI Research Assistant 🔍
-
-**Repository Name**: `ai-research-assistant`
 
 ## Overview
 
