@@ -73,7 +73,7 @@ st.markdown("""
 This tool helps you research topics using multiple sources:
 - Wikipedia for general knowledge
 - arXiv for scientific papers
-- HiAnime website information
+- W3School website information
 """)
 
 # Initialize session state to store the agent and conversation history
@@ -124,7 +124,7 @@ with st.sidebar:
     - Ollama for local LLM inference
     - Wikipedia API for general knowledge
     - arXiv API for scientific papers
-    - Custom knowledge base for HiAnime
+    - Custom knowledge base for W3School
     """)
     
     # Add a button to clear the conversation
