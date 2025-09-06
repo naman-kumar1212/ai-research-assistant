@@ -16,6 +16,17 @@ from dotenv import load_dotenv
 import streamlit as st
 
 def initialize_agent():
+    """Initializes and configures the AI agent.
+
+    This function sets up the entire agent by loading environment variables,
+    initializing the necessary tools (Wikipedia, Arxiv, and a custom web-based
+    retriever), configuring the language model (LLM), and creating an
+    agent executor.
+
+    Returns:
+        langchain.agents.AgentExecutor: An agent executor instance ready to
+        process user queries.
+    """
     # Load environment variables
     load_dotenv()
     os.environ["LANGCHAIN_TRACING_V2"] = "true"
@@ -57,77 +68,106 @@ def initialize_agent():
     ### Agent
     agent = create_openai_tools_agent(llm, tools, prompt)
     agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
-    
+
     return agent_executor
 
-# Set up Streamlit page configuration
-st.set_page_config(
-    page_title="AI Research Assistant",
-    page_icon="🔍",
-    layout="wide"
-)
+def setup_page():
+    """Sets up the Streamlit page configuration.
 
-# App title and description
-st.title("AI Research Assistant")
-st.markdown("""
-This tool helps you research topics using multiple sources:
-- Wikipedia for general knowledge
-- arXiv for scientific papers
-- W3School website information
-""")
-
-# Initialize session state to store the agent and conversation history
-if 'agent' not in st.session_state:
-    with st.spinner('Initializing AI agent...'):
-        st.session_state.agent = initialize_agent()
-    st.session_state.messages = []
-
-# Display chat history
-for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
-
-# Chat input
-user_query = st.chat_input("Ask me anything...")
-
-# Process the query when submitted
-if user_query:
-    # Add user message to chat history
-    st.session_state.messages.append({"role": "user", "content": user_query})
-    
-    # Display user message
-    with st.chat_message("user"):
-        st.markdown(user_query)
-    
-    # Display assistant response
-    with st.chat_message("assistant"):
-        with st.spinner("Researching..."):
-            message_placeholder = st.empty()
-            # Run the agent
-            response = st.session_state.agent.invoke({"input": user_query})
-            result = response.get("output", "I couldn't find an answer to that question.")
-            
-            # Update the placeholder with the response
-            message_placeholder.markdown(result)
-    
-    # Add assistant response to chat history
-    st.session_state.messages.append({"role": "assistant", "content": result})
-
-# Add sidebar with additional options
-with st.sidebar:
-    st.header("Options")
-    
-    st.subheader("About")
+    This function configures the page title, icon, and layout for the
+    Streamlit application. It also displays the main title and a brief
+    description of the application on the page.
+    """
+    st.set_page_config(
+        page_title="AI Research Assistant",
+        page_icon="🔍",
+        layout="wide"
+    )
+    st.title("AI Research Assistant")
     st.markdown("""
-    This application uses:
-    - LangChain for agent orchestration
-    - Ollama for local LLM inference
-    - Wikipedia API for general knowledge
-    - arXiv API for scientific papers
-    - Custom knowledge base for W3School
+    This tool helps you research topics using multiple sources:
+    - Wikipedia for general knowledge
+    - arXiv for scientific papers
+    - W3School website information
     """)
-    
-    # Add a button to clear the conversation
-    if st.button("Clear Conversation"):
+
+def manage_session_state():
+    """Manages the Streamlit session state.
+
+    This function initializes the 'agent' and 'messages' in the Streamlit
+    session state if they are not already present. The agent is created using
+    the `initialize_agent` function, and the messages list is initialized as
+    an empty list.
+    """
+    if 'agent' not in st.session_state:
+        with st.spinner('Initializing AI agent...'):
+            st.session_state.agent = initialize_agent()
+    if 'messages' not in st.session_state:
         st.session_state.messages = []
-        st.rerun()
+
+def display_chat_interface():
+    """Displays the chat interface and handles user interaction.
+
+    This function is responsible for displaying the chat history and the chat
+    input box. When a user enters a query, it is added to the session state,
+    and the agent is invoked to get a response. The user's query and the
+    agent's response are then displayed in the chat interface.
+    """
+    for message in st.session_state.messages:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
+
+    user_query = st.chat_input("Ask me anything...")
+    if user_query:
+        st.session_state.messages.append({"role": "user", "content": user_query})
+        with st.chat_message("user"):
+            st.markdown(user_query)
+
+        with st.chat_message("assistant"):
+            with st.spinner("Researching..."):
+                message_placeholder = st.empty()
+                response = st.session_state.agent.invoke({"input": user_query})
+                result = response.get("output", "I couldn't find an answer to that question.")
+                message_placeholder.markdown(result)
+
+        st.session_state.messages.append({"role": "assistant", "content": result})
+
+def display_sidebar():
+    """Displays the sidebar.
+
+    The sidebar contains information about the application and a button to
+    clear the conversation history. When the 'Clear Conversation' button is
+    clicked, the 'messages' list in the session state is cleared, and the
+    page is rerun.
+    """
+    with st.sidebar:
+        st.header("Options")
+
+        st.subheader("About")
+        st.markdown("""
+        This application uses:
+        - LangChain for agent orchestration
+        - Ollama for local LLM inference
+        - Wikipedia API for general knowledge
+        - arXiv API for scientific papers
+        - Custom knowledge base for W3School
+        """)
+
+        if st.button("Clear Conversation"):
+            st.session_state.messages = []
+            st.rerun()
+
+def main():
+    """The main function to run the AI Research Assistant application.
+
+    This function orchestrates the application by calling the other functions
+    in the correct order to set up the page, manage the session state, and
+    display the UI components.
+    """
+    setup_page()
+    manage_session_state()
+    display_chat_interface()
+    display_sidebar()
+
+if __name__ == "__main__":
+    main()

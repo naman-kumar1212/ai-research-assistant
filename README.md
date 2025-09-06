@@ -8,7 +8,7 @@ The **AI Research Assistant** is a Streamlit-based web application designed to h
 
 - **Wikipedia Integration**: Fetch general knowledge information from Wikipedia.
 - **arXiv Integration**: Search for scientific papers and research articles.
-- **Custom Knowledge Base**: Retrieve information from a custom knowledge base (e.g., HiAnime website).
+- **Custom Knowledge Base**: Retrieve information from a custom knowledge base (e.g., W3Schools).
 - **Chat Interface**: Interactive chat interface powered by Streamlit.
 - **Local LLM Inference**: Utilizes Ollama for local language model inference.
 
@@ -20,6 +20,28 @@ The **AI Research Assistant** is a Streamlit-based web application designed to h
 - **Wikipedia API**: For fetching general knowledge.
 - **arXiv API**: For accessing scientific papers.
 - **FAISS**: For vector storage and retrieval.
+
+## Code Structure
+
+The project is contained within a single file, `app.py`, which is structured into several functions:
+
+- **`initialize_agent()`**: Sets up the AI agent, including tools and the language model.
+- **`setup_page()`**: Configures the Streamlit page title, icon, and layout.
+- **`manage_session_state()`**: Initializes and manages the agent and chat history in the session state.
+- **`display_chat_interface()`**: Handles the chat UI, user input, and agent responses.
+- **`display_sidebar()`**: Renders the sidebar with options and information.
+- **`main()`**: The main function that orchestrates the application flow.
+
+## Data Flow
+
+The application's data flow is as follows:
+
+1.  **User Input**: The user enters a query into the chat input box in the Streamlit interface.
+2.  **Agent Invocation**: The user's query is passed to the LangChain agent executor.
+3.  **Tool Selection**: The agent, guided by the language model, decides which tool (Wikipedia, arXiv, or the custom knowledge base) is best suited to answer the query.
+4.  **Tool Execution**: The selected tool is executed with the user's query.
+5.  **Response Generation**: The output from the tool is passed back to the language model, which generates a human-readable response.
+6.  **Display Response**: The final response is displayed in the chat interface.
 
 ## Installation
 
@@ -69,6 +91,23 @@ To run this project locally, follow these steps:
 1. **Ask Questions**: Use the chat input to ask questions about any topic.
 2. **View Responses**: The assistant will fetch information from Wikipedia, arXiv, and the custom knowledge base.
 3. **Clear Conversation**: Use the "Clear Conversation" button in the sidebar to reset the chat history.
+
+## How to Extend
+
+You can extend the functionality of the AI Research Assistant by adding new tools to the agent. Here’s how you can do it:
+
+1. **Choose a Tool**: LangChain offers a wide variety of tools. You can find a list of available tools in the [LangChain documentation](https://python.langchain.com/docs/integrations/tools/).
+2. **Initialize the Tool**: In the `initialize_agent` function in `app.py`, initialize your new tool. For example, to add a tool for searching on DuckDuckGo, you would add:
+   ```python
+   from langchain_community.tools import DuckDuckGoSearchRun
+
+   search = DuckDuckGoSearchRun()
+   ```
+3. **Add the Tool to the `tools` List**: Add the newly initialized tool to the `tools` list:
+   ```python
+   tools = [wiki, arxiv, retrieval_tool, search]
+   ```
+4. **Update the Agent's Prompt (Optional)**: If you want the agent to have a better understanding of when to use the new tool, you might need to adjust the prompt.
 
 ## Contributing
 
